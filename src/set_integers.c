@@ -5,6 +5,7 @@
 
 #define SET_DEFAULT_CAPACITY 8
 #define SET_MAX_CAPACITY 100
+#define SET_ERROR (-1)
 
 // Data structure
 struct set_integers {
@@ -44,7 +45,7 @@ SetIntegers *create_set(int capacity) {
 // Destruction
 int destroy(SetIntegers **set) {
     if (!set || !*set) {
-        return -1;
+        return SET_ERROR;
     }
 
     free((*set)->set);
@@ -52,4 +53,21 @@ int destroy(SetIntegers **set) {
     *set = NULL;
 
     return 1;
+}
+
+// Basic operations
+int is_empty(SetIntegers *set) {
+    if(!set) {
+        return SET_ERROR;
+    }
+
+    return set->size == 0;
+}
+
+int size(SetIntegers *set) {
+    if(!set) {
+        return SET_ERROR;
+    }
+
+    return set->size;
 }
