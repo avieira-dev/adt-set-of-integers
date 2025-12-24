@@ -6,7 +6,7 @@ typedef struct set_integers SetIntegers;
 
 // Functions signatures
 // Creation and destruction
-SetIntegers *create_set();
+SetIntegers *create_set(int capacity);
 int destroy(SetIntegers **set);
 
 // Basic operations
