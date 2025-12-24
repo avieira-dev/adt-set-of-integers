@@ -1,6 +1,9 @@
 #ifndef SET_INTEGERS_H
 #define SET_INTEGERS_H
 
+#define SET_OK    (1)
+#define SET_ERROR (-1)
+
 // Data structure
 typedef struct set_integers SetIntegers;
 

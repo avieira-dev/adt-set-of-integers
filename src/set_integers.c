@@ -5,7 +5,6 @@
 
 #define SET_DEFAULT_CAPACITY 8
 #define SET_MAX_CAPACITY 100
-#define SET_ERROR (-1)
 
 // Data structure
 struct set_integers {
@@ -52,7 +51,7 @@ int destroy(SetIntegers **set) {
     free(*set);
     *set = NULL;
 
-    return 1;
+    return SET_OK;
 }
 
 // Basic operations
@@ -70,4 +69,64 @@ int size(SetIntegers *set) {
     }
 
     return set->size;
+}
+
+// Operations with elements
+int insert(SetIntegers *set, int value) {
+    if(!set) {
+        return SET_ERROR;
+    }
+
+    if(set->size == set->capacity) {
+        return SET_ERROR;
+    }
+
+    if(belongs(set, value)) {
+        return SET_ERROR;
+    }
+
+    set->set[set->size++] = value;
+
+    return SET_OK;
+}
+
+int remove_value(SetIntegers *set, int value) {
+    if(!set) {
+        return SET_ERROR;
+    }
+
+    int index = -1;
+
+    for(int i = 0; i < set->size; i++) {
+        if(set->set[i] == value) {
+            index = i;
+            break;
+        }
+    }
+
+    if(index == -1) {
+        return SET_ERROR;
+    }
+
+    for(int i = index; i < set->size - 1; i++) {
+        set->set[i] = set->set[i + 1];
+    }
+
+    set->size--;
+
+    return SET_OK;
+}
+
+int belongs(SetIntegers *set, int value) {
+    if(!set) {
+        return SET_ERROR;
+    }
+
+    for(int i = 0; i < set->size; i++) {
+        if(set->set[i] == value) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
