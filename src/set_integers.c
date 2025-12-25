@@ -130,3 +130,26 @@ int belongs(SetIntegers *set, int value) {
 
     return 0;
 }
+
+// Operations between sets
+SetIntegers *union_sets(SetIntegers *set_a, SetIntegers *set_b) {
+    if(!set_a || !set_b) {
+        return NULL;
+    }
+
+    SetIntegers *result = create_set(set_a->size + set_b->size);
+
+    if(!result) {
+        return NULL;
+    }
+
+    for(int i = 0; i < set_a->size; i++) {
+        insert(result, set_a->set[i]);
+    }
+
+    for(int i = 0; i < set_b->size; i++) {
+        insert(result, set_b->set[i]);
+    }
+
+    return result;
+}
