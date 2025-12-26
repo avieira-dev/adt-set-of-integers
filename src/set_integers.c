@@ -1,4 +1,4 @@
-#include "include/set_integers.h"
+#include "set_integers.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -71,6 +71,25 @@ int size(SetIntegers *set) {
     return set->size;
 }
 
+void display_set(SetIntegers *set) {
+    if(!set) {
+        printf("\033[31mERROR 'null set'\033[0m\n");
+        return;
+    }
+
+    printf("{ ");
+
+    for(int i = 0; i < set->size; i++) {
+        printf("%d", set->set[i]);
+
+        if(i < set->size - 1) {
+            printf(", ");
+        }
+    }
+
+    printf(" }\n");
+}
+
 // Operations with elements
 int insert(SetIntegers *set, int value) {
     if(!set) {
@@ -124,7 +143,7 @@ int belongs(SetIntegers *set, int value) {
 
     for(int i = 0; i < set->size; i++) {
         if(set->set[i] == value) {
-            return 1;
+            return SET_OK;
         }
     }
 

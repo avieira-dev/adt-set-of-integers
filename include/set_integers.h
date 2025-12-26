@@ -15,6 +15,7 @@ int destroy(SetIntegers **set);
 // Basic operations
 int is_empty(SetIntegers *set);
 int size(SetIntegers *set);
+void display_set(SetIntegers *set);
 
 // Operations with elements
 int insert(SetIntegers *set, int value);
