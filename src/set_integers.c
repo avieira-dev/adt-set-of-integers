@@ -1,3 +1,13 @@
+// ============================================================
+// Set of Integers - Implementation
+//
+// This file contains the private implementation of the
+// SetIntegers data structure and its operations.
+//
+// The internal structure is hidden from the user to ensure
+// encapsulation and data integrity.
+// ============================================================
+
 #include "set_integers.h"
 
 #include <stdio.h>
@@ -55,12 +65,14 @@ int destroy(SetIntegers **set) {
 }
 
 // Basic operations
-int is_empty(SetIntegers *set) {
-    if(!set) {
+int is_empty(SetIntegers *set, int *out_empty) {
+    if(!set || !out_empty) {
         return SET_ERROR;
     }
 
-    return set->size == 0;
+    *out_empty = (set->size == 0);
+
+    return SET_OK;
 }
 
 int size(SetIntegers *set) {
@@ -100,7 +112,13 @@ int insert(SetIntegers *set, int value) {
         return SET_ERROR;
     }
 
-    if(belongs(set, value)) {
+    int belongs_flag;
+
+    if(belongs(set, value, &belongs_flag) != SET_OK) {
+        return SET_ERROR;
+    }
+
+    if(belongs_flag) {
         return SET_ERROR;
     }
 
@@ -136,18 +154,21 @@ int remove_value(SetIntegers *set, int value) {
     return SET_OK;
 }
 
-int belongs(SetIntegers *set, int value) {
-    if(!set) {
+int belongs(SetIntegers *set, int value, int *out_belongs) {
+    if(!set || !out_belongs) {
         return SET_ERROR;
     }
 
     for(int i = 0; i < set->size; i++) {
         if(set->set[i] == value) {
+            *out_belongs = 1;
             return SET_OK;
         }
     }
 
-    return 0;
+    *out_belongs = 0;
+
+    return SET_OK;
 }
 
 // Operations between sets
@@ -171,4 +192,129 @@ SetIntegers *union_sets(SetIntegers *set_a, SetIntegers *set_b) {
     }
 
     return result;
+}
+
+SetIntegers *difference_sets(SetIntegers *set_a, SetIntegers *set_b) {
+    if(!set_a || !set_b) {
+        return NULL;
+    }
+
+    SetIntegers *result = create_set(set_a->size);
+
+    if(!result) {
+        return NULL;
+    }
+
+    for(int i = 0; i < set_a->size; i++) {
+        int belongs_flag;
+
+        if(belongs(set_b, set_a->set[i], &belongs_flag) != SET_OK) {
+            destroy(&result);
+            return NULL;
+        }
+
+        if(!belongs_flag) {
+            insert(result, set_a->set[i]);
+        }
+    }
+
+    return result;
+}
+
+SetIntegers *intersection_sets(SetIntegers *set_a, SetIntegers *set_b) {
+    if(!set_a || !set_b) {
+        return NULL;
+    }
+
+    int max_size = set_a->size < set_b->size ? set_a->size : set_b->size;
+
+    SetIntegers *result = create_set(max_size);
+
+    if(!result) {
+        return NULL;
+    }
+
+    for(int i = 0; i < set_a->size; i++) {
+        int belongs_flag;
+
+        if(belongs(set_b, set_a->set[i], &belongs_flag) != SET_OK) {
+            destroy(&result);
+            return NULL;
+        }
+
+        if(belongs_flag) {
+            insert(result, set_a->set[i]);
+        }
+    }
+
+    return result;
+}
+
+int equal_sets(SetIntegers *set_a, SetIntegers *set_b) {
+    if(!set_a || !set_b) {
+        return SET_ERROR;
+    }
+
+    if(set_a->size != set_b->size) {
+        return 0;
+    }
+
+    for(int i = 0; i < set_a->size; i++) {
+        int belongs_flag;
+
+        if(belongs(set_b, set_a->set[i], &belongs_flag) != SET_OK) {
+            return SET_ERROR;
+        }
+
+        if(!belongs_flag) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+// Queries
+int minimum_value(SetIntegers *set, int *out_value) {
+    if(!set || !out_value) {
+        return SET_ERROR;
+    }
+
+    if(set->size == 0) {
+        return SET_ERROR;
+    }
+
+    int min = set->set[0];
+
+    for(int i = 1; i < set->size; i++) {
+        if(set->set[i] < min) {
+            min = set->set[i];
+        }
+    }
+
+    *out_value = min;
+
+    return SET_OK;
+}
+
+int maximum_value(SetIntegers *set, int *out_value) {
+    if(!set || !out_value) {
+        return SET_ERROR;
+    }
+
+    if(set->size == 0) {
+        return SET_ERROR;
+    }
+
+    int max = set->set[0];
+
+    for(int i = 1; i < set->size; i++) {
+        if(set->set[i] > max) {
+            max = set->set[i];
+        }
+    }
+
+    *out_value = max;
+
+    return SET_OK;
 }
