@@ -10,7 +10,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
 add_executable(set_integers
-    src/main.c
+    src/test.c
     src/set_integers.c
 )
 

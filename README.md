@@ -3,7 +3,7 @@
 **Project Status:** In Development
 
 ## Overview
-`Set Integers` is a small C project that implements a **custom set (TAD) for integers**.  
+`Set Integers` is a small C project that implements a **custom set (ADT) for integers**.  
 It provides basic operations like:
 
 - Creating a set
@@ -11,14 +11,14 @@ It provides basic operations like:
 - Removing integers
 - Checking membership
 
-The goal is to have a **clean, modular, and reusable TAD**, suitable for learning and future expansion.
+The goal is to have a **clean, modular, and reusable ADT**, suitable for learning and future expansion.
 
 ## Project Structure
 
 ```text
 adt-set-of-integers/
-├── include/  
-│   ├── main.c
+├── src/  
+│   ├── test.c
 │   └── set_integers.c
 ├── include/ 
 │   └── set_integers.h
@@ -65,19 +65,35 @@ cmake --version
 
 1. Create a `build` folder at the root of the project and navigate into it.
 
-2. Generate the build files:
+```bash
+mkdir build
+cd build
+```
+
+2. Generate the build system::
 
 ```bash
 cmake ..
 ```
 
-3. Run the generated binary (assuming it’s `set_integers`):
+3. Build the project:
+
+```bash
+cmake --build .
+```
+
+> On Linux/Mac, you can alternatively run `make` if CMake generated a Makefile.
+
+4. Run the generated binary (assuming it’s `set_integers`):
 
 ```bash
 ./set_integers   # Linux/Mac
 set_integers.exe # Windows
 ```
 
+> Note: `cmake --build .` performs incremental builds — only files that changed are recompiled.
+
 ## Observations
 
 - This project is under development.
+- Designed as a learning tool and a foundation for future expansion.
