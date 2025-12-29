@@ -1,6 +1,6 @@
 # Abstract Data Type - Set Of Integers
 
-**Project Status:** In Development
+**Project Status:** First stage (part) completed.
 
 ## Overview
 `Set Integers` is a small C project that implements a **custom set (ADT) for integers**.  
