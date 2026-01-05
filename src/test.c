@@ -14,7 +14,7 @@ int main(void) {
     // Creation
     // ----------------------------------------------
     SetIntegers *set_a = create_set(5);
-    SetIntegers *set_b = create_set(5);
+    SetIntegers *set_b = create_set(6);
 
     if(!set_a || !set_b) {
         printf("\n\033[31mERROR: Failed to create sets\033[0m\n");
@@ -30,18 +30,19 @@ int main(void) {
     // ----------------------------------------------
     printf("Insert elements into Set A\n");
     insert(set_a, 1);
+    insert(set_a, 2);
+    insert(set_a, 3);
+    insert(set_a, 4);
     insert(set_a, 5);
-    insert(set_a, 9);
-    insert(set_a, 13);
-    insert(set_a, 17);
     display_set(set_a);
 
     printf("Insert elements into Set B\n");
-    insert(set_b, 1);
-    insert(set_b, 6);
-    insert(set_b, 11);
-    insert(set_b, 16);
-    insert(set_b, 21);
+    insert(set_b, 10);
+    insert(set_b, 20);
+    insert(set_b, 30);
+    insert(set_b, 40);
+    insert(set_b, 50);
+    insert(set_b, 60);
     display_set(set_b);
 
     separator();
@@ -53,11 +54,27 @@ int main(void) {
 
     is_empty(set_a, &empty_flag);
     printf("Set A is empty? %s\n", empty_flag ? "YES" : "NO");
-    printf("Set A size: %d\n\n", size(set_a));
+    printf("Set A size: %d\n", size(set_a));
+
+    long long subsets_a = subsets_count(set_a);
+
+    if(subsets_a != SET_ERROR) {
+        printf("Number of subsets of Set A: %lld\n\n", subsets_a);
+    } else {
+        printf("ERROR calculating subsets of Set A\n\n");
+    }
 
     is_empty(set_b, &empty_flag);
     printf("Set B is empty? %s\n", empty_flag ? "YES" : "NO");
     printf("Set B size: %d\n", size(set_b));
+
+    long long subsets_b = subsets_count(set_b);
+
+    if(subsets_b != SET_ERROR) {
+        printf("Number of subsets of Set B: %lld\n", subsets_b);
+    } else {
+        printf("ERROR calculating subsets of Set B\n");
+    }
 
     separator();
 

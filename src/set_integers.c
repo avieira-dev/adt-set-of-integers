@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define SET_DEFAULT_CAPACITY 8
 #define SET_MAX_CAPACITY 100
@@ -272,6 +273,18 @@ int equal_sets(SetIntegers *set_a, SetIntegers *set_b) {
     }
 
     return 1;
+}
+
+long long subsets_count(SetIntegers *set) {
+    if(!set) {
+        return SET_ERROR;
+    }
+
+    if(set->size >= 63) {
+        return SET_ERROR;
+    }
+
+    return 1LL << set->size;
 }
 
 // Queries

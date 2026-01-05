@@ -139,6 +139,14 @@ SetIntegers *intersection_sets(SetIntegers *set_a, SetIntegers *set_b);
  */
 int equal_sets(SetIntegers *set_a, SetIntegers *set_b);
 
+/**
+ * @brief Returns the number of subsets of the set
+ * @param set Pointer to the set
+ * @return Number of subsets or SET_ERROR if invalid
+ */
+
+long long subsets_count(SetIntegers *set);
+
 /* ==========================================================================
  * Queries
  * ========================================================================== */
