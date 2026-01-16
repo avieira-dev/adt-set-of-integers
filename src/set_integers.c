@@ -16,15 +16,15 @@
 #define SET_DEFAULT_CAPACITY 8
 #define SET_MAX_CAPACITY 100
 
-// Data structure
 struct set_integers {
     int size;
     int capacity;
-    int *set;
+    int *data;
 };
 
-// Creation
-SetIntegers *create_set(int capacity) {
+/* Lifecycle */
+
+SetIntegers *set_create(int capacity) {
     if(capacity <= 0) {
         capacity = SET_DEFAULT_CAPACITY;
     }
@@ -41,9 +41,9 @@ SetIntegers *create_set(int capacity) {
 
     set->capacity = capacity;
     set->size = 0;
-    set->set = calloc(capacity, sizeof(int));
+    set->data = calloc(capacity, sizeof(int));
 
-    if(!set->set) {
+    if(!set->data) {
         free(set);
         return NULL;
     }
@@ -51,21 +51,21 @@ SetIntegers *create_set(int capacity) {
     return set;
 }
 
-// Destruction
-int destroy(SetIntegers **set) {
+int set_destroy(SetIntegers **set) {
     if (!set || !*set) {
         return SET_ERROR;
     }
 
-    free((*set)->set);
+    free((*set)->data);
     free(*set);
     *set = NULL;
 
     return SET_OK;
 }
 
-// Basic operations
-int is_empty(SetIntegers *set, int *out_empty) {
+/* State queries */
+
+int set_is_empty(const SetIntegers *set, int *out_empty) {
     if(!set || !out_empty) {
         return SET_ERROR;
     }
@@ -75,7 +75,7 @@ int is_empty(SetIntegers *set, int *out_empty) {
     return SET_OK;
 }
 
-int size(SetIntegers *set) {
+int set_size(const SetIntegers *set) {
     if(!set) {
         return SET_ERROR;
     }
@@ -83,51 +83,23 @@ int size(SetIntegers *set) {
     return set->size;
 }
 
-void display_set(SetIntegers *set) {
-    if(!set) {
-        printf("\033[31mERROR 'null set'\033[0m\n");
-        return;
-    }
+/* Element operations */
 
-    printf("{ ");
-
-    for(int i = 0; i < set->size; i++) {
-        printf("%d", set->set[i]);
-
-        if(i < set->size - 1) {
-            printf(", ");
-        }
-    }
-
-    printf(" }\n");
-}
-
-// Operations with elements
-int insert(SetIntegers *set, int value) {
-    if(!set) {
+int set_insert(SetIntegers *set, int value) {
+    if(!set || set->size == set->capacity) {
         return SET_ERROR;
     }
 
-    if(set->size == set->capacity) {
+    int exists;
+    if (set_contains(set, value, &exists) != SET_OK || exists) {
         return SET_ERROR;
     }
 
-    int belongs_flag;
-
-    if(belongs(set, value, &belongs_flag) != SET_OK) {
-        return SET_ERROR;
-    }
-
-    if(belongs_flag) {
-        return SET_ERROR;
-    }
-
-    set->set[set->size++] = value;
-
+    set->data[set->size++] = value;
     return SET_OK;
 }
 
-int remove_value(SetIntegers *set, int value) {
+int set_remove(SetIntegers *set, int value) {
     if(!set) {
         return SET_ERROR;
     }
@@ -135,7 +107,7 @@ int remove_value(SetIntegers *set, int value) {
     int index = -1;
 
     for(int i = 0; i < set->size; i++) {
-        if(set->set[i] == value) {
+        if(set->data[i] == value) {
             index = i;
             break;
         }
@@ -146,127 +118,111 @@ int remove_value(SetIntegers *set, int value) {
     }
 
     for(int i = index; i < set->size - 1; i++) {
-        set->set[i] = set->set[i + 1];
+        set->data[i] = set->data[i + 1];
     }
 
     set->size--;
-
     return SET_OK;
 }
 
-int belongs(SetIntegers *set, int value, int *out_belongs) {
-    if(!set || !out_belongs) {
+int set_contains(const SetIntegers *set, int value, int *out_contains) {
+    if(!set || !out_contains) {
         return SET_ERROR;
     }
 
     for(int i = 0; i < set->size; i++) {
-        if(set->set[i] == value) {
-            *out_belongs = 1;
+        if(set->data[i] == value) {
+            *out_contains = 1;
             return SET_OK;
         }
     }
 
-    *out_belongs = 0;
-
+    *out_contains = 0;
     return SET_OK;
 }
 
-// Operations between sets
-SetIntegers *union_sets(SetIntegers *set_a, SetIntegers *set_b) {
-    if(!set_a || !set_b) {
+/* Set operations */
+
+SetIntegers *set_union(const SetIntegers *a, const SetIntegers *b) {
+    if(!a || !b) {
         return NULL;
     }
 
-    SetIntegers *result = create_set(set_a->size + set_b->size);
-
+    SetIntegers *result = set_create(a->size + b->size);
     if(!result) {
         return NULL;
     }
 
-    for(int i = 0; i < set_a->size; i++) {
-        insert(result, set_a->set[i]);
+    for(int i = 0; i < a->size; i++) {
+        set_insert(result, a->data[i]);
     }
 
-    for(int i = 0; i < set_b->size; i++) {
-        insert(result, set_b->set[i]);
+    for(int i = 0; i < b->size; i++) {
+        set_insert(result, b->data[i]);
     }
 
     return result;
 }
 
-SetIntegers *difference_sets(SetIntegers *set_a, SetIntegers *set_b) {
-    if(!set_a || !set_b) {
+SetIntegers *set_difference(const SetIntegers *a, const SetIntegers *b) {
+    if(!a || !b) {
         return NULL;
     }
 
-    SetIntegers *result = create_set(set_a->size);
-
+    SetIntegers *result = set_create(a->size);
     if(!result) {
         return NULL;
     }
 
-    for(int i = 0; i < set_a->size; i++) {
-        int belongs_flag;
+    for(int i = 0; i < a->size; i++) {
+        int exists;
 
-        if(belongs(set_b, set_a->set[i], &belongs_flag) != SET_OK) {
-            destroy(&result);
-            return NULL;
-        }
+        set_contains(b, a->data[i], &exists);
 
-        if(!belongs_flag) {
-            insert(result, set_a->set[i]);
+        if(!exists) {
+            set_insert(result, a->data[i]);
         }
     }
 
     return result;
 }
 
-SetIntegers *intersection_sets(SetIntegers *set_a, SetIntegers *set_b) {
-    if(!set_a || !set_b) {
+SetIntegers *set_intersection(const SetIntegers *a, const SetIntegers *b) {
+    if(!a || !b) {
         return NULL;
     }
 
-    int max_size = set_a->size < set_b->size ? set_a->size : set_b->size;
-
-    SetIntegers *result = create_set(max_size);
+    int max = a->size < b->size ? a->size : b->size;
+    SetIntegers *result = set_create(max);
 
     if(!result) {
         return NULL;
     }
 
-    for(int i = 0; i < set_a->size; i++) {
-        int belongs_flag;
+    for(int i = 0; i < a->size; i++) {
+        int exists;
 
-        if(belongs(set_b, set_a->set[i], &belongs_flag) != SET_OK) {
-            destroy(&result);
-            return NULL;
-        }
+        set_contains(b, a->data[i], &exists);
 
-        if(belongs_flag) {
-            insert(result, set_a->set[i]);
+        if(exists) {
+            set_insert(result, a->data[i]);
         }
     }
 
     return result;
 }
 
-int equal_sets(SetIntegers *set_a, SetIntegers *set_b) {
-    if(!set_a || !set_b) {
-        return SET_ERROR;
-    }
-
-    if(set_a->size != set_b->size) {
+int set_equals(const SetIntegers *a, const SetIntegers *b) {
+    if(!a || !b || a->size != b->size) {
         return 0;
     }
 
-    for(int i = 0; i < set_a->size; i++) {
-        int belongs_flag;
+    for(int i = 0; i < a->size; i++) {
+        int exists;
 
-        if(belongs(set_b, set_a->set[i], &belongs_flag) != SET_OK) {
-            return SET_ERROR;
-        }
+        set_contains(b, a->data[i], &exists);
 
-        if(!belongs_flag) {
+        if(!exists) {
             return 0;
         }
     }
@@ -274,59 +230,68 @@ int equal_sets(SetIntegers *set_a, SetIntegers *set_b) {
     return 1;
 }
 
-long long subsets_count(SetIntegers *set) {
-    if(!set) {
-        return SET_ERROR;
-    }
+/* Mathematical queries */
 
-    if(set->size >= 63) {
+long long set_subsets_count(const SetIntegers *set) {
+    // Limit to prevent overflow in bit shifting (1LL << size)
+    if(!set || set->size >= 63) {
         return SET_ERROR;
     }
 
     return 1LL << set->size;
 }
 
-// Queries
-int minimum_value(SetIntegers *set, int *out_value) {
-    if(!set || !out_value) {
+int set_min(const SetIntegers *set, int *out_value) {
+    if(!set || !out_value || set->size == 0) {
         return SET_ERROR;
     }
 
-    if(set->size == 0) {
-        return SET_ERROR;
-    }
-
-    int min = set->set[0];
+    int min = set->data[0];
 
     for(int i = 1; i < set->size; i++) {
-        if(set->set[i] < min) {
-            min = set->set[i];
+        if(set->data[i] < min) {
+            min = set->data[i];
         }
     }
 
     *out_value = min;
-
     return SET_OK;
 }
 
-int maximum_value(SetIntegers *set, int *out_value) {
-    if(!set || !out_value) {
+int set_max(const SetIntegers *set, int *out_value) {
+    if(!set || !out_value || set->size == 0) {
         return SET_ERROR;
     }
 
-    if(set->size == 0) {
-        return SET_ERROR;
-    }
-
-    int max = set->set[0];
+    int max = set->data[0];
 
     for(int i = 1; i < set->size; i++) {
-        if(set->set[i] > max) {
-            max = set->set[i];
+        if(set->data[i] > max) {
+            max = set->data[i];
         }
     }
 
     *out_value = max;
-
     return SET_OK;
+}
+
+/* Debug */
+
+void set_print(const SetIntegers *set) {
+    if(!set) {
+        printf("\033[31mERROR 'null set'\033[0m\n");
+        return;
+    }
+
+    printf("{ ");
+
+    for(int i = 0; i < set->size; i++) {
+        printf("%d", set->data[i]);
+
+        if(i < set->size - 1) {
+            printf(", ");
+        }
+    }
+
+    printf(" }\n");
 }
