@@ -3,179 +3,101 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void separator(void) {
-    printf("\n==================================================\n\n");
+#define COLOR_RESET   "\033[0m"
+#define COLOR_TITLE   "\033[1;34m"
+#define COLOR_OK      "\033[1;32m"
+#define COLOR_ERR     "\033[1;31m"
+#define COLOR_LABEL   "\033[1;36m"
+
+static void banner(const char *title) {
+    printf("\n" COLOR_TITLE);
+    printf("==================================================\n");
+    printf(" %s\n", title);
+    printf("==================================================\n" COLOR_RESET);
+}
+
+static void section(const char *title) {
+    printf("\n" COLOR_LABEL ">> %s\n" COLOR_RESET, title);
+}
+
+static void result_ok(const char *msg) {
+    printf(COLOR_OK "✔ %s\n" COLOR_RESET, msg);
+}
+
+static void result_err(const char *msg) {
+    printf(COLOR_ERR "✖ %s\n" COLOR_RESET, msg);
 }
 
 int main(void) {
-    printf("=== SET INTEGERS | TEST SUITE ===\n");
+    banner("SET INTEGERS — TEST SUITE");
 
-    // ----------------------------------------------
-    // Creation
-    // ----------------------------------------------
-    SetIntegers *set_a = create_set(5);
-    SetIntegers *set_b = create_set(6);
+    section("Creating sets");
 
-    if(!set_a || !set_b) {
-        printf("\n\033[31mERROR: Failed to create sets\033[0m\n");
+    SetIntegers *a = set_create(5);
+    SetIntegers *b = set_create(6);
+
+    if(a && b) {
+        result_ok("Sets A and B created successfully");
+    } else {
+        result_err("Failed to create sets");
         return 1;
     }
 
-    printf("\n\033[32mSets created successfully\033[0m\n");
+    section("Inserting elements");
 
-    separator();
+    set_insert(a, 1);
+    set_insert(a, 2);
+    set_insert(a, 3);
+    set_insert(a, 4);
+    set_insert(a, 5);
 
-    // ----------------------------------------------
-    // Insert elements
-    // ----------------------------------------------
-    printf("Insert elements into Set A\n");
-    insert(set_a, 1);
-    insert(set_a, 2);
-    insert(set_a, 3);
-    insert(set_a, 4);
-    insert(set_a, 5);
-    display_set(set_a);
+    printf("Set A = ");
+    set_print(a);
 
-    printf("Insert elements into Set B\n");
-    insert(set_b, 10);
-    insert(set_b, 20);
-    insert(set_b, 30);
-    insert(set_b, 40);
-    insert(set_b, 50);
-    insert(set_b, 60);
-    display_set(set_b);
+    set_insert(b, 10);
+    set_insert(b, 20);
+    set_insert(b, 30);
+    set_insert(b, 40);
+    set_insert(b, 50);
+    set_insert(b, 60);
 
-    separator();
+    printf("Set B = ");
+    set_print(b);
 
-    // ----------------------------------------------
-    // Size and empty check
-    // ----------------------------------------------
-    int empty_flag;
+    section("Basic queries");
 
-    is_empty(set_a, &empty_flag);
-    printf("Set A is empty? %s\n", empty_flag ? "YES" : "NO");
-    printf("Set A size: %d\n", size(set_a));
+    int empty;
+    set_is_empty(a, &empty);
+    printf("Set A empty? %s\n", empty ? "YES" : "NO");
+    printf("Set A size: %d\n", set_size(a));
 
-    long long subsets_a = subsets_count(set_a);
+    long long subsets = set_subsets_count(a);
+    printf("Set A subsets: %lld\n", subsets);
 
-    if(subsets_a != SET_ERROR) {
-        printf("Number of subsets of Set A: %lld\n\n", subsets_a);
-    } else {
-        printf("ERROR calculating subsets of Set A\n\n");
-    }
+    section("Set operations");
 
-    is_empty(set_b, &empty_flag);
-    printf("Set B is empty? %s\n", empty_flag ? "YES" : "NO");
-    printf("Set B size: %d\n", size(set_b));
+    SetIntegers *u = set_union(a, b);
+    printf("Union(A, B) = ");
+    set_print(u);
 
-    long long subsets_b = subsets_count(set_b);
+    SetIntegers *i = set_intersection(a, b);
+    printf("Intersection(A, B) = ");
+    set_print(i);
 
-    if(subsets_b != SET_ERROR) {
-        printf("Number of subsets of Set B: %lld\n", subsets_b);
-    } else {
-        printf("ERROR calculating subsets of Set B\n");
-    }
+    SetIntegers *d = set_difference(a, b);
+    printf("Difference(A - B) = ");
+    set_print(d);
 
-    separator();
+    section("Cleanup");
 
-    // ----------------------------------------------
-    // Belongs
-    // ----------------------------------------------
-    int belongs_flag;
+    set_destroy(&a);
+    set_destroy(&b);
+    set_destroy(&u);
+    set_destroy(&i);
+    set_destroy(&d);
 
-    belongs(set_a, 1, &belongs_flag);
-    printf("1 belongs to Set A? %s\n", belongs_flag ? "YES" : "NO");
+    result_ok("All resources released successfully");
 
-    belongs(set_a, 100, &belongs_flag);
-    printf("100 belongs to Set A? %s\n\n", belongs_flag ? "YES" : "NO");
-
-    belongs(set_b, 1, &belongs_flag);
-    printf("1 belongs to Set B? %s\n", belongs_flag ? "YES" : "NO");
-
-    belongs(set_b, 100, &belongs_flag);
-    printf("100 belongs to Set B? %s\n", belongs_flag ? "YES" : "NO");
-
-    separator();
-
-    // ----------------------------------------------
-    // Remove element
-    // ----------------------------------------------
-    printf("Removing 13 from Set A\n");
-    remove_value(set_a, 13);
-    display_set(set_a);
-
-    printf("Removing 16 from Set B\n");
-    remove_value(set_b, 16);
-    display_set(set_b);
-
-    separator();
-
-    // ----------------------------------------------
-    // Minimum and maximum
-    // ----------------------------------------------
-    int min, max;
-
-    if(minimum_value(set_a, &min) == SET_OK) {
-        printf("Minimum value in Set A: %d\n", min);
-    }
-
-    if(maximum_value(set_a, &max) == SET_OK) {
-        printf("Maximum value in Set A: %d\n", max);
-    }
-
-    printf("\n");
-
-    if(minimum_value(set_b, &min) == SET_OK) {
-        printf("Minimum value in Set B: %d\n", min);
-    }
-
-    if(maximum_value(set_b, &max) == SET_OK) {
-        printf("Maximum value in Set B: %d\n", max);
-    }
-
-    separator();
-
-    // ----------------------------------------------
-    // Set Operations
-    // ----------------------------------------------
-    printf("Union of A and B\n");
-    SetIntegers *set_union = union_sets(set_a, set_b);
-    display_set(set_union);
-
-    separator();
-
-    printf("Intersection of A and B\n");
-    SetIntegers *set_intersection = intersection_sets(set_a, set_b);
-    display_set(set_intersection);
-
-    separator();
-
-    printf("Difference A - B\n");
-    SetIntegers *set_difference = difference_sets(set_a, set_b);
-    display_set(set_difference);
-
-    separator();
-
-    // ----------------------------------------------
-    // Equality
-    // ----------------------------------------------
-    int equal = equal_sets(set_a, set_b);
-    printf("Set A equals Set B? %s\n",
-           equal == 1 ? "YES" : equal == 0 ? "NO" : "ERROR");
-
-    separator();
-
-    // ----------------------------------------------
-    // Cleanup
-    // ----------------------------------------------
-    destroy(&set_a);
-    destroy(&set_b);
-    destroy(&set_union);
-    destroy(&set_intersection);
-    destroy(&set_difference);
-
-    printf("\033[32mAll sets destroyed successfully\033[0m\n");
-    printf("\n=== TEST SUITE FINISHED ===\n");
-
+    banner("TEST SUITE FINISHED");
     return 0;
 }
