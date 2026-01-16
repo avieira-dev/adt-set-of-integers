@@ -1,17 +1,24 @@
 # Abstract Data Type - Set Of Integers
 
-**Project Status:** First stage (part) completed.
+**Project Status:** Core ADT implemented and validated via test suite.
+
+## Table of Contents
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [CMake installation](#cmake-installation)
+- [Compiling and Running](#compiling-and-running)
+- [Observations](#observations)
+- [License](#license)
 
 ## Overview
-`Set Integers` is a small C project that implements a **custom set (ADT) for integers**.  
-It provides basic operations like:
+`Set Integers` is a C project that implements a **custom Abstract Data Type (ADT) for integer sets**, designed with a strong focus on **encapsulation, explicit memory management**, and clean **API design**.
 
-- Creating a set
-- Adding integers
-- Removing integers
-- Checking membership
+The project provides core set operations such as creation, insertion, removal, and membership queries, serving as a practical exercise in **data structure modeling at a low level**.
 
-The goal is to have a **clean, modular, and reusable ADT**, suitable for learning and future expansion.
+Beyond functionality, the main goal is to practice and demonstrate **fundamental software engineering principles in C**, including separation between interface and implementation, well-defined contracts, and disciplined resource management.
+
+The result is a **clean, modular, and reusable ADT**, suitable both for learning purposes and as a foundation for future extensions.
 
 ## Project Structure
 
@@ -97,3 +104,6 @@ set_integers.exe # Windows
 
 - This project is under development.
 - Designed as a learning tool and a foundation for future expansion.
+
+## License
+[MIT License](LICENSE)
