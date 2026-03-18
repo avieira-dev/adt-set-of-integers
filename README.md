@@ -1,24 +1,33 @@
-# Abstract Data Type - Set Of Integers
+# Integer Set ADT (C)
 
-**Project Status:** Core ADT implemented and validated via test suite.
+> A minimal and modular integer set ADT in C, focused on clean API design and explicit memory management.
+
+![status](https://img.shields.io/badge/status-active-brightgreen)
+![language](https://img.shields.io/badge/language-C-blue)
+![build](https://img.shields.io/badge/build-CMake-orange)
+![license](https://img.shields.io/badge/license-MIT-blue)
+
+> [!NOTE]  
+> Designed as a learning tool and a foundation for future expansion.
 
 ## Table of Contents
 - [Overview](#overview)
 - [Project Structure](#project-structure)
 - [Requirements](#requirements)
-- [CMake installation](#cmake-installation)
+- [Installation](#installation)
+- [Usage Example](#usage-example)
 - [Compiling and Running](#compiling-and-running)
-- [Observations](#observations)
+- [Developer](#developer)
 - [License](#license)
 
 ## Overview
-`Set Integers` is a C project that implements a **custom Abstract Data Type (ADT) for integer sets**, designed with a strong focus on **encapsulation, explicit memory management**, and clean **API design**.
+**Integer Set ADT** is a C library that implements a **custom Abstract Data Type (ADT) for integer sets**, with a strong emphasis on **encapsulation**, **explicit memory management**, and **clean API design**.
 
-The project provides core set operations such as creation, insertion, removal, and membership queries, serving as a practical exercise in **data structure modeling at a low level**.
+It provides core set operations such as creation, insertion, removal, and membership queries, offering a minimal and predictable interface for working with integer collections.
 
-Beyond functionality, the main goal is to practice and demonstrate **fundamental software engineering principles in C**, including separation between interface and implementation, well-defined contracts, and disciplined resource management.
+The project is designed to reinforce **low-level data structure modeling** and key software engineering practices in C, including clear separation between interface and implementation, well-defined contracts, and disciplined resource management.
 
-The result is a **clean, modular, and reusable ADT**, suitable both for learning purposes and as a foundation for future extensions.
+The result is a **lightweight, modular, and reusable ADT**, suitable for learning purposes and as a foundation for future extensions.
 
 ## Project Structure
 
@@ -37,9 +46,9 @@ adt-set-of-integers/
 ## Requirements
 
 - **CMake** (version 3.25 or higher recommended)
-- **Compiler** C/C++ (GCC, Clang ou MSVC)
+- **C compiler** (GCC, Clang or MSVC)
 
-## CMake installation
+## Installation
 
 ### Ubuntu / Debian
 
@@ -68,6 +77,46 @@ cmake --version
 cmake --version
 ```
 
+## Usage Example
+
+```c
+#include <stdio.h>
+#include "set_integers.h"
+
+int main(void) {
+
+    // Create a set with initial capacity
+    SetIntegers *set = set_create(5);
+
+    if (!set) {
+        printf("Failed to create set\n");
+        return 1;
+    }
+
+    // Insert elements
+    set_insert(set, 10);
+    set_insert(set, 20);
+    set_insert(set, 30);
+
+    // Check membership
+    int exists;
+    set_contains(set, 20, &exists);
+    printf("Contains 20? %s\n", exists ? "YES" : "NO");
+
+    // Print set
+    printf("Set = ");
+    set_print(set);
+
+    // Cleanup
+    set_destroy(&set);
+
+    return 0;
+}
+```
+
+> [!NOTE]  
+> A complete example is available at: **src/test.c**
+
 ## Compiling and Running
 
 1. Create a `build` folder at the root of the project and navigate into it.
@@ -77,7 +126,7 @@ mkdir build
 cd build
 ```
 
-2. Generate the build system::
+2. Generate the build system:
 
 ```bash
 cmake ..
@@ -89,7 +138,9 @@ cmake ..
 cmake --build .
 ```
 
-> On Linux/Mac, you can alternatively run `make` if CMake generated a Makefile.
+> [!NOTE]  
+> On Linux/Mac, you can alternatively run **make** if CMake  
+> generated a Makefile.
 
 4. Run the generated binary (assuming it’s `set_integers`):
 
@@ -98,12 +149,12 @@ cmake --build .
 set_integers.exe # Windows
 ```
 
-> Note: `cmake --build .` performs incremental builds — only files that changed are recompiled.
+> [!NOTE]
+> **cmake --build .** performs incremental builds — only files that changed  
+> are recompiled.
 
-## Observations
-
-- This project is under development.
-- Designed as a learning tool and a foundation for future expansion.
+## Developer
+Alexandre Vieira (**avieira-dev**)
 
 ## License
 [MIT License](LICENSE)
