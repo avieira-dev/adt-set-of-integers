@@ -2,10 +2,12 @@
 
 > A minimal and modular integer set ADT in C, focused on clean API design and explicit memory management.
 
-![status](https://img.shields.io/badge/status-active-brightgreen)
-![language](https://img.shields.io/badge/language-C-blue)
-![build](https://img.shields.io/badge/build-CMake-orange)
-![license](https://img.shields.io/badge/license-MIT-blue)
+<p align="center">
+  <img src="https://img.shields.io/badge/status-active-1f6feb"/>
+  <img src="https://img.shields.io/badge/language-C-A8B9CC"/>
+  <img src="https://img.shields.io/badge/build-CMake-8a63d2"/>
+  <img src="https://img.shields.io/badge/license-MIT-6e7781"/>
+</p>
 
 > [!NOTE]  
 > Designed as a learning tool and a foundation for future expansion.
