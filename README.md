@@ -1,13 +1,10 @@
-# Integer Set ADT (C)
+<div align="center">
+    <h1>Integer Set ADT (C)</h1>
+    <p>A minimal and modular integer set ADT in C, focused on clean API design and explicit memory management.<p/>
+    <img src="https://img.shields.io/badge/status-active-1f6feb"/> <img src="https://img.shields.io/badge/language-C-A8B9CC"/> <img src="https://img.shields.io/badge/build-CMake-8a63d2"/> <img src="https://img.shields.io/badge/license-MIT-6e7781"/>
+</div>
 
-> A minimal and modular integer set ADT in C, focused on clean API design and explicit memory management.
-
-<p align="center">
-  <img src="https://img.shields.io/badge/status-active-1f6feb"/>
-  <img src="https://img.shields.io/badge/language-C-A8B9CC"/>
-  <img src="https://img.shields.io/badge/build-CMake-8a63d2"/>
-  <img src="https://img.shields.io/badge/license-MIT-6e7781"/>
-</p>
+---
 
 > [!NOTE]  
 > Designed as a learning tool and a foundation for future expansion.
